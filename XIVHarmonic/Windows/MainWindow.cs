@@ -28,15 +28,22 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
+        if (OrchestrionIpc.IsAvailable())
+        {
+            if (ImGui.Button("IPC test: Play"))
+            {
+                OrchestrionIpc.Play(66);
+            }
+            if (ImGui.Button("IPC test: Stop"))
+            {
+                OrchestrionIpc.Play(0);
+            }
+        }
+        else
+        {
+            ImGui.Text("Orchestrion not available");
+        }
+        
         ImGui.Text($"The random config bool is {plugin.Configuration.SomePropertyToBeSavedAndWithADefault}");
-
-        if (ImGui.Button("IPC test: Play"))
-        {
-            
-        }
-        if (ImGui.Button("IPC test: Stop"))
-        {
-            
-        }
     }
 }

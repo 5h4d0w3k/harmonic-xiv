@@ -38,6 +38,8 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
+        
+        OrchestrionIpc.Initialize(PluginInterface);
     }
 
     public void Dispose()
@@ -54,8 +56,11 @@ public sealed class Plugin : IDalamudPlugin
 
     private void OnCommand(string command, string args)
     {
+        ToggleMainUi();
+    }
+
+    public void ToggleMainUi()
+    {
         MainWindow.Toggle();
     }
-    
-    public void ToggleMainUi() => MainWindow.Toggle();
 }
