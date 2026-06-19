@@ -13,7 +13,7 @@ public class GameData
     public static List<uint> AreaIds = [];
     public static List<string> StatusNames = [];
     public static List<uint> StatusIds = [];
-    public static List<uint> SongIds = [];
+    public static List<int> SongIds = [];
     public static List<string> SongNames = [];
 
     private static void PopulateListFromExcel<TFrom>(ref List<uint> ids, ref List<string> names,
@@ -44,6 +44,21 @@ public class GameData
         PopulateListFromExcel<Lumina.Excel.Sheets.Status>(
             ref StatusIds, ref StatusNames, x => x.Name.ToString()
         );
+
+        var orchSongs = OrchestrionIpc.AllSongs();
+        if (orchSongs != null)
+        {
+            foreach (var song in orchSongs)
+            {
+                if (song.Id <= 0) continue;
+                SongIds.Add(song.Id);
+                // End credits songs have absurdly long names which don't fit in UI
+                // We fix it by omitting their full names
+                SongNames.Add(song.FilePath.Contains("_EndCredit")
+                                  ? $"[{song.Id}] {song.FilePath}"
+                                  : $"[{song.Id}] {song.Name} ({song.FilePath})");
+            }
+        }
     }
 
     static GameData()
