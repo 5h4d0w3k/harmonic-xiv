@@ -166,6 +166,12 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(1);
                 ImGui.InputInt("##condEntityDist", ref _condDistance, 1);
                 
+                ImGui.TableNextRow();
+                ImGui.TableSetColumnIndex(0);
+                ImGui.Checkbox("If chat log message contains:", ref _checkbox2);
+                ImGui.TableSetColumnIndex(1);
+                ImGui.InputText("##condChatLog", ref _conditionString, 256);
+                
                 ImGui.EndTable();
                 
                 ImGui.Separator();
