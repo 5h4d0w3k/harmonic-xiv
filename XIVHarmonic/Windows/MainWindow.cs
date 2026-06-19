@@ -59,6 +59,7 @@ public class MainWindow : Window, IDisposable
             if (ImGui.BeginTabItem("Active conditions", activeConditionFlags))
             {
                 activeConditionFlags = ImGuiTabItemFlags.None;
+                
                 if (ImGui.BeginTable("EntriesTable", 3,
                     ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
                 {
@@ -66,21 +67,26 @@ public class MainWindow : Window, IDisposable
                     ImGui.TableSetupColumn("Actions");
                     ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed, 50);
                     ImGui.TableHeadersRow();
-
-                    foreach (var condition in plugin.Configuration.Conditions)
+                    
+                    for (var i=plugin.Configuration.Conditions.Count-1; i>=0; i--)
                     {
+                        var condition = plugin.Configuration.Conditions[i];
                         ImGui.TableNextRow();
                         ImGui.TableSetColumnIndex(0);
                         ImGui.Text(condition.ToIfString());
                         ImGui.TableSetColumnIndex(1);
                         ImGui.Text(condition.ToThenString());
                         ImGui.TableSetColumnIndex(2);
-                        ImGui.Button("Delete");
+                        if (ImGui.Button($"Delete##D{i}"))
+                        {
+                            plugin.Configuration.Conditions.RemoveAt(i);
+                            plugin.Configuration.Save();
+                        }
                     }
 
                     ImGui.EndTable();
                 }
-
+                
                 ImGui.EndTabItem();
             }
 
