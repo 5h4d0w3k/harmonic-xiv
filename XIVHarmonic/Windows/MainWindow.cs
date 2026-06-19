@@ -29,17 +29,25 @@ public class MainWindow : Window, IDisposable
 
     public void Dispose() { }
     
-    private static string _conditionString = string.Empty;
+    private int _weatherTest;
+    private int _areaTest;
+    private int _statusTest;
+    private int _combatTest;
+    private int _entityProximityTest;
+    private string _entityNameTest;
+    private string _chatLogTest;
 
-    private static bool _checkbox1;
-    private static bool _checkbox2;
-    private static bool _checkbox3;
+    private bool _weatherTestActive;
+    private bool _areaTestActive;
+    private bool _statusTestActive;
+    private bool _combatTestActive;
+    private bool _entityProximityTestActive;
+    private bool _entityNameTestActive;
+    private bool _chatLogTestActive;
     
-    private static int _condWeather;
-    private static int _condArea;
-    private static int _condStatus;
-    private static int _condDistance = 999;
-    private static int _condAction;
+    private int _targetSong;
+    private int _targetSongAction;
+    private bool _disableIfInactive;
     
     public override void Draw()
     {
@@ -83,63 +91,63 @@ public class MainWindow : Window, IDisposable
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("If current weather is: ", ref _checkbox1);
+                ImGui.Checkbox("If current weather is: ", ref _weatherTestActive);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.Combo("##condWeather", ref _condWeather, GameData.WeatherNames, GameData.WeatherNames.Count);
+                ImGui.Combo("##condWeather", ref _weatherTest, GameData.WeatherNames, GameData.WeatherNames.Count);
                 ImGui.SameLine();
                 ImGui.Button("Current");
 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("If current area is: ", ref _checkbox2);
+                ImGui.Checkbox("If current area is: ", ref _areaTestActive);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.Combo("##condArea", ref _condArea, GameData.AreaNames, GameData.AreaNames.Count);
+                ImGui.Combo("##condArea", ref _areaTest, GameData.AreaNames, GameData.AreaNames.Count);
                 ImGui.SameLine();
                 ImGui.Button("Current");
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("If affected by status: ", ref _checkbox3);
+                ImGui.Checkbox("If affected by status: ", ref _statusTestActive);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.Combo("##condStatus", ref _condStatus, GameData.StatusNames, GameData.StatusNames.Count);
+                ImGui.Combo("##condStatus", ref _statusTest, GameData.StatusNames, GameData.StatusNames.Count);
                 ImGui.SameLine();
                 ImGui.Button("Current");
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("If in combat state:", ref _checkbox2);
+                ImGui.Checkbox("If in combat state:", ref _combatTestActive);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.Combo("##condCombat", ref _condStatus, combatStates, combatStates.Length);
+                ImGui.Combo("##condCombat", ref _combatTest, combatStates, combatStates.Length);
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("If entity is in proximity:", ref _checkbox2);
+                ImGui.Checkbox("If entity is in proximity:", ref _entityNameTestActive);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.InputText("##condEntityName", ref _conditionString, 256);
+                ImGui.InputText("##condEntityName", ref _entityNameTest, 256);
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("within this distance:", ref _checkbox2);
+                ImGui.Checkbox("within this distance:", ref _entityProximityTestActive);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.InputInt("##condEntityDist", ref _condDistance, 1);
+                ImGui.InputInt("##condEntityDist", ref _entityProximityTest, 1);
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("If chat log message contains:", ref _checkbox2);
+                ImGui.Checkbox("If chat log message contains:", ref _chatLogTestActive);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.InputText("##condChatLog", ref _conditionString, 256);
+                ImGui.InputText("##condChatLog", ref _chatLogTest, 256);
                 
                 ImGui.EndTable();
                 
                 ImGui.Separator();
                 
-                ImGui.RadioButton("Then play the following track: ", ref _condAction, 0);
+                ImGui.RadioButton("Then play the following track: ", ref _targetSongAction, 0);
                 ImGui.SameLine();
-                ImGui.Combo("##condStatus", ref _condStatus, GameData.SongNames, GameData.SongNames.Count);
+                ImGui.Combo("##condStatus", ref _targetSong, GameData.SongNames, GameData.SongNames.Count);
 
-                ImGui.RadioButton("Then stop playing custom tracks", ref _condAction, 1);
+                ImGui.RadioButton("Then stop playing custom tracks", ref _targetSongAction, 1);
                 
-                ImGui.Checkbox("Stop playing once condition is not met", ref _checkbox2);
+                ImGui.Checkbox("Stop playing once condition is not met", ref _disableIfInactive);
                 
                 ImGui.Separator();
                 
