@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
@@ -15,12 +14,6 @@ public class MainWindow : Window, IDisposable
 {
     private readonly Plugin plugin;
 
-    private readonly List<string> weatherNames = new();
-    private readonly List<uint> weatherIds = new();
-    private readonly List<string> areaNames = new();
-    private readonly List<uint> areaIds = new();
-    private readonly List<string> statusNames = new();
-    private readonly List<uint> statusIds = new();
     private readonly string[] combatStates = { "In combat", "Not in combat" };
 
     public MainWindow(Plugin plugin)
@@ -32,42 +25,6 @@ public class MainWindow : Window, IDisposable
         };
 
         this.plugin = plugin;
-        
-        var weatherSheet = Plugin.DataManager.GetExcelSheet<Weather>(Plugin.ClientState.ClientLanguage);
-        foreach (var row in weatherSheet)
-        {
-            var weatherName = row.Name.ToString();
-            if (weatherName.IsNullOrEmpty())
-            {
-                weatherName = "Unknown";
-            }
-            weatherNames.Add($"[{row.RowId}] {weatherName}");
-            weatherIds.Add(row.RowId);
-        }
-
-        var areaSheet = Plugin.DataManager.GetExcelSheet<TerritoryType>(Plugin.ClientState.ClientLanguage);
-        foreach (var row in areaSheet)
-        {
-            var areaName = row.PlaceName.Value.Name.ToString();
-            if (areaName.IsNullOrEmpty())
-            {
-                areaName = "Unknown";
-            }
-            areaNames.Add($"[{row.RowId}] {areaName}");
-            areaIds.Add(row.RowId);
-        }
-        
-        var statusSheet = Plugin.DataManager.GetExcelSheet<Lumina.Excel.Sheets.Status>(Plugin.ClientState.ClientLanguage);
-        foreach (var row in statusSheet)
-        {
-            var statusName = row.Name.ToString();
-            if (statusName.IsNullOrEmpty())
-            {
-                statusName = "Unknown";
-            }
-            statusNames.Add($"[{row.RowId}] {statusName}");
-            statusIds.Add(row.RowId);
-        }
     }
 
     public void Dispose() { }
@@ -128,7 +85,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(0);
                 ImGui.Checkbox("If current weather is: ", ref _checkbox1);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.Combo("##condWeather", ref _condWeather, weatherNames, weatherNames.Count);
+                ImGui.Combo("##condWeather", ref _condWeather, GameData.WeatherNames, GameData.WeatherNames.Count);
                 ImGui.SameLine();
                 ImGui.Button("Current");
 
@@ -136,7 +93,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(0);
                 ImGui.Checkbox("If current area is: ", ref _checkbox2);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.Combo("##condArea", ref _condArea, areaNames, areaNames.Count);
+                ImGui.Combo("##condArea", ref _condArea, GameData.AreaNames, GameData.AreaNames.Count);
                 ImGui.SameLine();
                 ImGui.Button("Current");
                 
@@ -144,7 +101,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(0);
                 ImGui.Checkbox("If affected by status: ", ref _checkbox3);
                 ImGui.TableSetColumnIndex(1);
-                ImGui.Combo("##condStatus", ref _condStatus, statusNames, statusNames.Count);
+                ImGui.Combo("##condStatus", ref _condStatus, GameData.StatusNames, GameData.StatusNames.Count);
                 ImGui.SameLine();
                 ImGui.Button("Current");
                 
@@ -178,7 +135,7 @@ public class MainWindow : Window, IDisposable
                 
                 ImGui.RadioButton("Then play the following track: ", ref _condAction, 0);
                 ImGui.SameLine();
-                ImGui.Combo("##condStatus", ref _condStatus, weatherNames, weatherNames.Count);
+                ImGui.Combo("##condStatus", ref _condStatus, GameData.SongNames, GameData.SongNames.Count);
 
                 ImGui.RadioButton("Then stop playing custom tracks", ref _condAction, 1);
                 
