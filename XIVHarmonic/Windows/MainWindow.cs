@@ -48,14 +48,17 @@ public class MainWindow : Window, IDisposable
     private int _targetSong;
     private int _targetSongAction;
     private bool _disableIfInactive;
+
+    private ImGuiTabItemFlags activeConditionFlags = ImGuiTabItemFlags.None;
     
     public override void Draw()
     {
         if (ImGui.BeginTabBar("HarmonicTabs"))
         {
             // Active conditions tab
-            if (ImGui.BeginTabItem("Active conditions"))
+            if (ImGui.BeginTabItem("Active conditions", activeConditionFlags))
             {
+                activeConditionFlags = ImGuiTabItemFlags.None;
                 if (ImGui.BeginTable("EntriesTable", 3,
                     ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
                 {
@@ -153,6 +156,17 @@ public class MainWindow : Window, IDisposable
                 
                 if (ImGui.Button("Save"))
                 {
+                    Condition cond = new();
+                    if (_weatherTestActive) cond.weatherTest = (int) GameData.WeatherIds[_weatherTest];
+                    if (_areaTestActive) cond.areaTest = (int) GameData.AreaIds[_areaTest];
+                    if (_statusTestActive) cond.statusTest = (int) GameData.StatusIds[_statusTest];
+                    if (_combatTestActive) cond.combatTest = _combatTest;
+                    if (_entityNameTestActive) cond.entityNameTest = _entityNameTest;
+                    if (_entityProximityTestActive) cond.entityProximityTest = _entityProximityTest;
+                    if (_chatLogTestActive) cond.chatLogTest = _chatLogTest;
+                    plugin.Configuration.Conditions.Add(cond);
+                    plugin.Configuration.Save();
+                    activeConditionFlags = ImGuiTabItemFlags.SetSelected;
                 }
 
                 ImGui.EndTabItem();

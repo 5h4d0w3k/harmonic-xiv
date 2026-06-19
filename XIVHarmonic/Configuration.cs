@@ -7,16 +7,20 @@ namespace XIVHarmonic;
 
 public struct Condition
 {
-    public int weatherTest;
-    public int areaTest;
-    public int statusTest;
-    public int combatTest;
-    public int entityProximityTest;
-    public string entityNameTest;
-    public string chatLogTest;
+    public int weatherTest = 0;
+    public int areaTest = 0;
+    public int statusTest = 0;
+    public int combatTest = 0;
+    public int entityProximityTest = 0;
+    public string entityNameTest = "";
+    public string chatLogTest = "";
     
-    public int targetSong;
-    public bool disableIfInactive;
+    public int targetSong = 0;
+    public bool disableIfInactive = false;
+
+    public Condition()
+    {
+    }
 
     public override string ToString()
     {
