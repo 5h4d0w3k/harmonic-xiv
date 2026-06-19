@@ -62,21 +62,18 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.BeginTable("EntriesTable", 3,
                     ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
                 {
-                    ImGui.TableSetupColumn("Condition", ImGuiTableColumnFlags.WidthStretch, 0.6f);
-                    ImGui.TableSetupColumn("Action");
-                    ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed, 100);
+                    ImGui.TableSetupColumn("Conditions");
+                    ImGui.TableSetupColumn("Actions");
+                    ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed, 50);
                     ImGui.TableHeadersRow();
 
-                    for (int i = 0; i < 33; i++)
+                    foreach (var condition in plugin.Configuration.Conditions)
                     {
                         ImGui.TableNextRow();
-
                         ImGui.TableSetColumnIndex(0);
-                        ImGui.Text($"If weather is: Rain\nIf area is: gdfklgjdfg{i}\nIf status is: In battle");
-
+                        ImGui.Text(condition.ToIfString());
                         ImGui.TableSetColumnIndex(1);
-                        ImGui.Text("Play track #66 (Bee My Honey)\nStop playing if conditions not met");
-
+                        ImGui.Text(condition.ToThenString());
                         ImGui.TableSetColumnIndex(2);
                         ImGui.Button("Delete");
                     }
