@@ -22,50 +22,59 @@ public struct Condition
     {
     }
 
-    public override string ToString()
+    public string ToIfString()
     {
         string str = "";
         if (weatherTest > 0)
         {
-            str += "If weather is: " + GameData.StringifyId(
-                       ref GameData.WeatherNames, ref GameData.WeatherIds, (uint)weatherTest) + "\n";
+            str += "\nIf weather is: " + GameData.StringifyId(
+                       ref GameData.WeatherNames, ref GameData.WeatherIds, (uint)weatherTest);
         }
         if (areaTest > 0)
         {
-            str += "If current area is: " + GameData.StringifyId(
-                       ref GameData.AreaNames, ref GameData.AreaIds, (uint)areaTest) + "\n";
+            str += "\nIf current area is: " + GameData.StringifyId(
+                       ref GameData.AreaNames, ref GameData.AreaIds, (uint)areaTest);
         }
         if (statusTest > 0)
         {
-            str += "If has status: " + GameData.StringifyId(
-                       ref GameData.StatusNames, ref GameData.StatusIds, (uint)statusTest) + "\n";
+            str += "\nIf has status: " + GameData.StringifyId(
+                       ref GameData.StatusNames, ref GameData.StatusIds, (uint)statusTest);
         }
         if (combatTest == 1)
         {
-            str += "If in combat\n";
+            str += "\nIf in combat";
         }
         if (combatTest == 2)
         {
-            str += "If not in combat\n";
+            str += "\nIf not in combat";
         }
 
         if (!entityNameTest.IsNullOrEmpty())
         {
-            str += $"If entity with name [{entityNameTest}] is found";
+            str += $"\nIf entity with name [{entityNameTest}] is found";
             if (entityProximityTest > 0)
             {
                 str += $" within {entityProximityTest} units";
             }
-            str += "\n";
         }
 
         if (!chatLogTest.IsNullOrEmpty())
         {
-            str += $"If chat log contains [{chatLogTest}]\n";
+            str += $"\nIf chat log contains [{chatLogTest}]";
         }
 
-        str += "Then play song: " + GameData.StringifyId(
-                   ref GameData.SongNames, ref GameData.SongIds, (uint)targetSong);
+        if (str.IsNullOrEmpty())
+        {
+            str += "Always";
+        }
+
+        return str.Substring(1);
+    }
+
+    public string ToThenString()
+    {
+        string str = "Then play song: " + GameData.StringifyId(
+                         ref GameData.SongNames, ref GameData.SongIds, (uint)targetSong);
 
         if (disableIfInactive)
         {
@@ -73,6 +82,11 @@ public struct Condition
         }
 
         return str;
+    }
+
+    public override string ToString()
+    {
+        return ToIfString() + ToThenString();
     }
 }
 
