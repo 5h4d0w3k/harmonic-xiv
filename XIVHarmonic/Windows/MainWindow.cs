@@ -161,6 +161,9 @@ public class MainWindow : Window, IDisposable
                     if (_entityNameTestActive) cond.entityNameTest = _entityNameTest;
                     if (_entityProximityTestActive) cond.entityProximityTest = _entityProximityTest;
                     if (_chatLogTestActive) cond.chatLogTest = _chatLogTest;
+                    cond.targetSong = (int) GameData.SongIds[_targetSong];
+                    if (_targetSongAction == 1) cond.targetSong = 0;
+                    cond.disableIfInactive = _disableIfInactive;
                     plugin.Configuration.Conditions.Add(cond);
                     plugin.Configuration.Save();
                     activeConditionFlags = ImGuiTabItemFlags.SetSelected;

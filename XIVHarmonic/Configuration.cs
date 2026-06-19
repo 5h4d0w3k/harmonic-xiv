@@ -73,9 +73,16 @@ public struct Condition
 
     public string ToThenString()
     {
-        string str = "Then play song: " + GameData.StringifyId(
-                         ref GameData.SongNames, ref GameData.SongIds, (uint)targetSong);
+        string str;
 
+        if (targetSong == 0)
+        {
+            str = "Stop all custom tracks";
+        } else {
+            str = "Then play song: " + GameData.StringifyId(
+                      ref GameData.SongNames, ref GameData.SongIds, (uint)targetSong);
+        }
+        
         if (disableIfInactive)
         {
             str += "\nStop playing if condition is inactive";
