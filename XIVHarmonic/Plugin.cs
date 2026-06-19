@@ -2,6 +2,7 @@
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using System.IO;
+using System.Linq;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using XIVHarmonic.Windows;
@@ -14,6 +15,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] internal static IClientState ClientState { get; private set; } = null!;
     [PluginService] internal static IPlayerState PlayerState { get; private set; } = null!;
+    [PluginService] internal static IObjectTable ObjectTable { get; private set; } = null!;
     [PluginService] internal static IDataManager DataManager { get; private set; } = null!;
     [PluginService] internal static IPluginLog Log { get; private set; } = null!;
 
@@ -62,5 +64,11 @@ public sealed class Plugin : IDalamudPlugin
     public void ToggleMainUi()
     {
         MainWindow.Toggle();
+    }
+
+    public uint[] PlayerEffects()
+    {
+        return ObjectTable.LocalPlayer == null ? [] : 
+                   ObjectTable.LocalPlayer.StatusList.Select(x => x.StatusId).ToArray();
     }
 }

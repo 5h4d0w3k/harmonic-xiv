@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
@@ -6,7 +7,10 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel.Sheets;
+using Status = FFXIVClientStructs.FFXIV.Client.Game.Status;
 
 namespace XIVHarmonic.Windows;
 
@@ -101,7 +105,13 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(1);
                 ImGui.Combo("##condWeather", ref _weatherTest, GameData.WeatherNames, GameData.WeatherNames.Count);
                 ImGui.SameLine();
-                ImGui.Button("Current");
+                if (ImGui.Button("Current##CW"))
+                {
+                    unsafe
+                    {
+                        _weatherTest = WeatherManager.Instance()->GetCurrentWeather();
+                    }
+                }
 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
@@ -109,7 +119,10 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(1);
                 ImGui.Combo("##condArea", ref _areaTest, GameData.AreaNames, GameData.AreaNames.Count);
                 ImGui.SameLine();
-                ImGui.Button("Current");
+                if (ImGui.Button("Current##CA"))
+                {
+                    _areaTest = (int)Plugin.ClientState.TerritoryType;
+                }
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
@@ -117,7 +130,10 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(1);
                 ImGui.Combo("##condStatus", ref _statusTest, GameData.StatusNames, GameData.StatusNames.Count);
                 ImGui.SameLine();
-                ImGui.Button("Current");
+                if (ImGui.Button("Current##CS"))
+                {
+                    _statusTest = (int)CycleStatusEffect();
+                }
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
@@ -187,5 +203,18 @@ public class MainWindow : Window, IDisposable
 
             ImGui.EndTabBar();
         }
+    }
+
+    private uint[] effectList = [];
+    private int effectListCycle = int.MaxValue;
+    
+    private uint CycleStatusEffect()
+    {
+        if (effectListCycle > effectList.Length - 1)
+        {
+            effectList = plugin.PlayerEffects();
+            effectListCycle = 0;
+        }
+        return effectList[effectListCycle++];
     }
 }
