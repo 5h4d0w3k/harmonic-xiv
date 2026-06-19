@@ -107,10 +107,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.SameLine();
                 if (ImGui.Button("Current##CW"))
                 {
-                    unsafe
-                    {
-                        _weatherTest = WeatherManager.Instance()->GetCurrentWeather();
-                    }
+                    _weatherTest = (int)GameData.CurrentWeatherId();
                 }
 
                 ImGui.TableNextRow();
@@ -121,7 +118,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.SameLine();
                 if (ImGui.Button("Current##CA"))
                 {
-                    _areaTest = (int)Plugin.ClientState.TerritoryType;
+                    _areaTest = (int)GameData.CurrentAreaId();
                 }
                 
                 ImGui.TableNextRow();

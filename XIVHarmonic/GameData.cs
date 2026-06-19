@@ -1,5 +1,6 @@
 using System;
 using Dalamud.Utility;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel;
 
 namespace XIVHarmonic;
@@ -68,6 +69,19 @@ public class GameData
             if (ids[i] == id) return names[i];
         }
         return $"[{id}] Undefined";
+    }
+
+    public static uint CurrentWeatherId()
+    {
+        unsafe
+        {
+             return WeatherManager.Instance()->GetCurrentWeather();
+        }
+    }
+
+    public static uint CurrentAreaId()
+    {
+        return Plugin.ClientState.TerritoryType;
     }
 
     static GameData()
