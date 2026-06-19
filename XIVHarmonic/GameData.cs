@@ -13,7 +13,7 @@ public class GameData
     public static List<uint> AreaIds = [];
     public static List<string> StatusNames = [];
     public static List<uint> StatusIds = [];
-    public static List<int> SongIds = [];
+    public static List<uint> SongIds = [];
     public static List<string> SongNames = [];
 
     private static void PopulateListFromExcel<TFrom>(ref List<uint> ids, ref List<string> names,
@@ -51,7 +51,7 @@ public class GameData
             foreach (var song in orchSongs)
             {
                 if (song.Id <= 0) continue;
-                SongIds.Add(song.Id);
+                SongIds.Add((uint)song.Id);
                 // End credits songs have absurdly long names which don't fit in UI
                 // We fix it by omitting their full names
                 SongNames.Add(song.FilePath.Contains("_EndCredit")
@@ -59,6 +59,15 @@ public class GameData
                                   : $"[{song.Id}] {song.Name} ({song.FilePath})");
             }
         }
+    }
+
+    public static string StringifyId(ref List<string> names, ref List<uint> ids, uint id)
+    {
+        for (var i = 0; i < ids.Count; i++)
+        {
+            if (ids[i] == id) return names[i];
+        }
+        return $"[{id}] Undefined";
     }
 
     static GameData()

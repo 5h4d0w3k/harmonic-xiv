@@ -34,8 +34,8 @@ public class MainWindow : Window, IDisposable
     private int _statusTest;
     private int _combatTest;
     private int _entityProximityTest;
-    private string _entityNameTest;
-    private string _chatLogTest;
+    private string _entityNameTest = "";
+    private string _chatLogTest = "";
 
     private bool _weatherTestActive;
     private bool _areaTestActive;
@@ -162,10 +162,6 @@ public class MainWindow : Window, IDisposable
             if (ImGui.BeginTabItem("Settings"))
             {
                 // todo
-                ImGui.Checkbox("Checkbox 1", ref _checkbox1);
-                ImGui.Checkbox("Checkbox 2", ref _checkbox2);
-                ImGui.Checkbox("Checkbox 3", ref _checkbox3);
-
                 ImGui.EndTabItem();
             }
 
