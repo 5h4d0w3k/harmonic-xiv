@@ -24,10 +24,10 @@ public class OrchestrionIpc
     private static ICallGateSubscriber<int, bool>? OrchPlaySong;
     private static ICallGateSubscriber<List<OrchSong>>? OrchAllSongInfo;
     
-    public static void Initialize(IDalamudPluginInterface pluginInterface)
+    public static void Initialize()
     {
-        OrchPlaySong = pluginInterface.GetIpcSubscriber<int, bool>("Orch.PlaySong");
-        OrchAllSongInfo = pluginInterface.GetIpcSubscriber<List<OrchSong>>("Orch.AllSongInfo");
+        OrchPlaySong = Plugin.PluginInterface.GetIpcSubscriber<int, bool>("Orch.PlaySong");
+        OrchAllSongInfo = Plugin.PluginInterface.GetIpcSubscriber<List<OrchSong>>("Orch.AllSongInfo");
     }
 
     public static bool Play(int songId)

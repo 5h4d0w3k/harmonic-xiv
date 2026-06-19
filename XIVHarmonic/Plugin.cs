@@ -39,7 +39,7 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
         
-        OrchestrionIpc.Initialize(PluginInterface);
+        OrchestrionIpc.Initialize();
     }
 
     public void Dispose()
