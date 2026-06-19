@@ -23,11 +23,13 @@ public class OrchestrionIpc
 {
     private static ICallGateSubscriber<int, bool>? OrchPlaySong;
     private static ICallGateSubscriber<List<OrchSong>>? OrchAllSongInfo;
+    private static ICallGateSubscriber<int>? OrchCurrentSong;
     
     public static void Initialize()
     {
         OrchPlaySong = Plugin.PluginInterface.GetIpcSubscriber<int, bool>("Orch.PlaySong");
         OrchAllSongInfo = Plugin.PluginInterface.GetIpcSubscriber<List<OrchSong>>("Orch.AllSongInfo");
+        OrchCurrentSong = Plugin.PluginInterface.GetIpcSubscriber<int>("Orch.CurrentSong");
     }
 
     public static bool Play(int songId)
@@ -48,5 +50,10 @@ public class OrchestrionIpc
     public static List<OrchSong>? AllSongs()
     {
         return OrchAllSongInfo?.InvokeFunc();
+    }
+
+    public static int CurrentSong()
+    {
+        return OrchCurrentSong?.InvokeFunc() ?? 0;
     }
 }
