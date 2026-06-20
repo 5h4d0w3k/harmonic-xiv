@@ -77,16 +77,20 @@ public class GameData
         return idx < 0 ? $"[{id}] Undefined" : names[idx];
     }
 
+    public static uint weatherMock = 0;
     public static uint CurrentWeatherId()
     {
+        if (weatherMock > 0) return weatherMock;
         unsafe
         {
              return WeatherManager.Instance()->GetCurrentWeather();
         }
     }
 
+    public static uint areaMock = 0;
     public static uint CurrentAreaId()
     {
+        if (areaMock > 0) return areaMock;
         return Plugin.ClientState.TerritoryType;
     }
 

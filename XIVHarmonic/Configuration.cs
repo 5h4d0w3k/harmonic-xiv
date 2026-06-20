@@ -38,7 +38,7 @@ public struct Condition
         }
         if (areaLeaveTest > 0)
         {
-            str += "\nWhen leaving area: " + GameData.StringifyId(
+            str += "\nTrigger on leaving area: " + GameData.StringifyId(
                        ref GameData.AreaNames, ref GameData.AreaIds, (uint)areaLeaveTest);
         }
         if (statusTest > 0)

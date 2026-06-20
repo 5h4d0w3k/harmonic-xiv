@@ -129,6 +129,8 @@ public sealed class Plugin : IDalamudPlugin
     private int tickTimer = 0;
     private uint lastAreaId = 0;
     
+    public int CurrentCondition = -1;
+    
     internal void OnFrameworkTick(IFramework framework)
     {
         if (tickTimer++ < Configuration.PollingInterval) return;
@@ -136,41 +138,37 @@ public sealed class Plugin : IDalamudPlugin
         
         var currentSong = OrchestrionIpc.CurrentSong();
         var currentAreaId = GameData.CurrentAreaId();
-        var queuedPlayerAction = -1;
         
-        foreach (var condition in Configuration.Conditions)
+        for (var i=0; i<Configuration.Conditions.Count; i++)
         {
+            var condition = Configuration.Conditions[i];
+            
             if (!condition.chatLogTest.IsNullOrEmpty() ||
                 condition.areaLeaveTest > 0)
             {
                 // Chat log and area change triggers are handled separately
                 continue;
             }
+            
             if (CheckCondition(condition))
             {
                 if (currentSong != condition.targetSong)
                 {
                     Log.Verbose("Basic condition fired: " + condition.ToString());
-                    // Play can override a stop, only once
-                    if (queuedPlayerAction <= 0) queuedPlayerAction = condition.targetSong;
+                    OrchestrionIpc.Play(condition.targetSong);
+                    CurrentCondition = i;
                 }
             }
             else
             {
                 if (condition.disableIfInactive &&
-                    OrchestrionIpc.CurrentSong() == condition.targetSong)
+                    CurrentCondition == i)
                 {
                     Log.Verbose("Basic condition stopped: " + condition.ToString());
-                    // Stops can't override plays
-                    if (queuedPlayerAction < 0) queuedPlayerAction = 0;
+                    OrchestrionIpc.Stop();
+                    CurrentCondition = -1;
                 }
             }
-        }
-        
-        if (queuedPlayerAction >= 0)
-        {
-            Log.Verbose($"Effective action: {queuedPlayerAction}");
-            OrchestrionIpc.Play(queuedPlayerAction);
         }
 
         if (currentAreaId != lastAreaId)

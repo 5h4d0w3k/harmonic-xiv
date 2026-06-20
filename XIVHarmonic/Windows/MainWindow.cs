@@ -57,6 +57,7 @@ public class MainWindow : Window, IDisposable
     private bool _disableIfInactive = true;
 
     private int _settingsPollingInterval;
+    private int _settingsMock;
 
     private ImGuiTabItemFlags activeConditionFlags = ImGuiTabItemFlags.None;
     
@@ -134,7 +135,7 @@ public class MainWindow : Window, IDisposable
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("If leaving area: ", ref _areaLeaveTestActive);
+                ImGui.Checkbox("Trigger on leaving area: ", ref _areaLeaveTestActive);
                 ImGui.TableSetColumnIndex(1);
                 ImGui.Combo("##condAreaLeave", ref _areaLeaveTest, GameData.AreaNames, GameData.AreaNames.Count);
                 ImGui.SameLine();
@@ -226,10 +227,23 @@ public class MainWindow : Window, IDisposable
                 ImGui.Text("Polling interval in frames: ");
                 ImGui.InputInt("##setPolling", ref _settingsPollingInterval, 1);
                 
-                if (ImGui.Button("Save settings##S2"))
+                if (ImGui.Button("Save configuration##S2"))
                 {
                     plugin.Configuration.PollingInterval = _settingsPollingInterval;
                     plugin.Configuration.Save();
+                }
+
+                if (ImGui.CollapsingHeader("Debug"))
+                {
+                    ImGui.InputInt("##setMock", ref _settingsMock, 1);
+                    if (ImGui.Button("Mock weather"))
+                    {
+                        GameData.weatherMock = (uint)_settingsMock;
+                    }
+                    if (ImGui.Button("Mock area"))
+                    {
+                        GameData.areaMock = (uint)_settingsMock;
+                    }
                 }
 
                 ImGui.EndTabItem();
