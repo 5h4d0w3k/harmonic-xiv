@@ -131,7 +131,7 @@ public sealed class Plugin : IDalamudPlugin
     
     internal void OnFrameworkTick(IFramework framework)
     {
-        if (tickTimer++ < 15) return;
+        if (tickTimer++ < Configuration.PollingInterval) return;
         tickTimer = 0;
         
         var currentSong = OrchestrionIpc.CurrentSong();
@@ -149,7 +149,7 @@ public sealed class Plugin : IDalamudPlugin
             {
                 if (currentSong != condition.targetSong)
                 {
-                    Log.Information("Basic condition fired: " + condition.ToString());
+                    Log.Verbose("Basic condition fired: " + condition.ToString());
                     OrchestrionIpc.Play(condition.targetSong);
                 }
             }
@@ -158,7 +158,7 @@ public sealed class Plugin : IDalamudPlugin
                 if (condition.disableIfInactive &&
                     OrchestrionIpc.CurrentSong() == condition.targetSong)
                 {
-                    Log.Information("Basic condition stopped: " + condition.ToString());
+                    Log.Verbose("Basic condition stopped: " + condition.ToString());
                     OrchestrionIpc.Stop();
                 }
             }
@@ -172,7 +172,7 @@ public sealed class Plugin : IDalamudPlugin
                     condition.areaLeaveTest == lastAreaId &&
                     CheckCondition(condition))
                 {
-                    Log.Information("Trigger on area change fired: " + condition.ToString());
+                    Log.Verbose("Trigger on area change fired: " + condition.ToString());
                     OrchestrionIpc.Play(condition.targetSong);
                 }
             }
@@ -189,7 +189,7 @@ public sealed class Plugin : IDalamudPlugin
                 if (message.Message.ToString().Contains(condition.chatLogTest) &&
                     CheckCondition(condition))
                 {
-                    Log.Information("Trigger on chat message fired: " + condition.ToString());
+                    Log.Verbose("Trigger on chat message fired: " + condition.ToString());
                     OrchestrionIpc.Play(condition.targetSong);
                 }
             }

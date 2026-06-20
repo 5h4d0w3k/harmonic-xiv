@@ -29,6 +29,7 @@ public class MainWindow : Window, IDisposable
         };
 
         this.plugin = plugin;
+        _settingsPollingInterval = plugin.Configuration.PollingInterval;
     }
 
     public void Dispose() { }
@@ -54,6 +55,8 @@ public class MainWindow : Window, IDisposable
     private int _targetSong;
     private int _targetSongAction;
     private bool _disableIfInactive = true;
+
+    private int _settingsPollingInterval;
 
     private ImGuiTabItemFlags activeConditionFlags = ImGuiTabItemFlags.None;
     
@@ -195,7 +198,7 @@ public class MainWindow : Window, IDisposable
                 
                 ImGui.Separator();
                 
-                if (ImGui.Button("Save"))
+                if (ImGui.Button("Save##S1"))
                 {
                     Condition cond = new();
                     if (_weatherTestActive) cond.weatherTest = (int) GameData.WeatherIds[_weatherTest];
@@ -220,7 +223,15 @@ public class MainWindow : Window, IDisposable
             // Configuration tab
             if (ImGui.BeginTabItem("Settings"))
             {
-                // todo
+                ImGui.Text("Polling interval in frames: ");
+                ImGui.InputInt("##setPolling", ref _settingsPollingInterval, 1);
+                
+                if (ImGui.Button("Save settings##S2"))
+                {
+                    plugin.Configuration.PollingInterval = _settingsPollingInterval;
+                    plugin.Configuration.Save();
+                }
+
                 ImGui.EndTabItem();
             }
 

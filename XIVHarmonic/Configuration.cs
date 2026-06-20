@@ -107,8 +107,8 @@ public struct Condition
 public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
-
     public List<Condition> Conditions = [];
+    public int PollingInterval { get; set; } = 15;
 
     // The below exists just to make saving less cumbersome
     public void Save()
