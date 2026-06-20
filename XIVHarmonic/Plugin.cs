@@ -136,6 +136,7 @@ public sealed class Plugin : IDalamudPlugin
         
         var currentSong = OrchestrionIpc.CurrentSong();
         var currentAreaId = GameData.CurrentAreaId();
+        var queuedPlayerAction = 0;
         
         foreach (var condition in Configuration.Conditions)
         {
@@ -150,7 +151,8 @@ public sealed class Plugin : IDalamudPlugin
                 if (currentSong != condition.targetSong)
                 {
                     Log.Verbose("Basic condition fired: " + condition.ToString());
-                    OrchestrionIpc.Play(condition.targetSong);
+                    // Play can override a stop, only once
+                    if (queuedPlayerAction <= 0) queuedPlayerAction = condition.targetSong;
                 }
             }
             else
@@ -159,10 +161,14 @@ public sealed class Plugin : IDalamudPlugin
                     OrchestrionIpc.CurrentSong() == condition.targetSong)
                 {
                     Log.Verbose("Basic condition stopped: " + condition.ToString());
-                    OrchestrionIpc.Stop();
+                    // Stops can't override plays
+                    if (queuedPlayerAction < 0) queuedPlayerAction = 0;
                 }
             }
         }
+        
+        Log.Verbose($"Effective action: {queuedPlayerAction}");
+        if (queuedPlayerAction >= 0) OrchestrionIpc.Play(queuedPlayerAction);
 
         if (currentAreaId != lastAreaId)
         {
