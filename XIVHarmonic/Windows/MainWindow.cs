@@ -51,7 +51,7 @@ public class MainWindow : Window, IDisposable
     
     private int _targetSong;
     private int _targetSongAction;
-    private bool _disableIfInactive;
+    private bool _disableIfInactive = true;
 
     private ImGuiTabItemFlags activeConditionFlags = ImGuiTabItemFlags.None;
     
