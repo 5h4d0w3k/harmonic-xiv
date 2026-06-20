@@ -9,6 +9,7 @@ public struct Condition
 {
     public int weatherTest = 0;
     public int areaTest = 0;
+    public int areaLeaveTest = 0;
     public int statusTest = 0;
     public int combatTest = 0;
     public int entityProximityTest = 0;
@@ -35,6 +36,11 @@ public struct Condition
             str += "\nIf current area is: " + GameData.StringifyId(
                        ref GameData.AreaNames, ref GameData.AreaIds, (uint)areaTest);
         }
+        if (areaLeaveTest > 0)
+        {
+            str += "\nWhen leaving area: " + GameData.StringifyId(
+                       ref GameData.AreaNames, ref GameData.AreaIds, (uint)areaLeaveTest);
+        }
         if (statusTest > 0)
         {
             str += "\nIf has status: " + GameData.StringifyId(
@@ -60,7 +66,7 @@ public struct Condition
 
         if (!chatLogTest.IsNullOrEmpty())
         {
-            str += $"\nIf chat log contains [{chatLogTest}]";
+            str += $"\nTrigger on chat log [{chatLogTest}]";
         }
 
         if (str.IsNullOrEmpty())
@@ -93,7 +99,7 @@ public struct Condition
 
     public override string ToString()
     {
-        return ToIfString() + ToThenString();
+        return ToIfString() + "\n" + ToThenString();
     }
 }
 

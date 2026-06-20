@@ -4,10 +4,14 @@ using Dalamud.Plugin;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Game.Chat;
 using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Game.Text;
+using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using XIVHarmonic.Windows;
 
 namespace XIVHarmonic;
@@ -22,6 +26,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static IDataManager DataManager { get; private set; } = null!;
     [PluginService] internal static IPluginLog Log { get; private set; } = null!;
     [PluginService] internal static IFramework Framework { get; private set; } = null!;
+    [PluginService] internal static IChatGui Chat { get; private set; } = null!;
 
     private const string CommandName = "/harmonic";
 
@@ -46,6 +51,8 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
         
         Framework.Update += OnFrameworkTick;
+            
+        Chat.ChatMessage += OnChatMessage;
         
         OrchestrionIpc.Initialize();
     }
@@ -85,17 +92,17 @@ public sealed class Plugin : IDalamudPlugin
         return ObjectTable.LocalPlayer != null &&
                    (ObjectTable.LocalPlayer.StatusFlags & StatusFlags.InCombat) != 0;
     }
-
+    
     private bool CheckCondition(Condition condition)
     {
-        bool conditionMet = true;
+        var conditionMet = true;
             
         if (condition.weatherTest > 0 &&
             GameData.CurrentWeatherId() != (uint)condition.weatherTest) conditionMet = false;
         else if (condition.areaTest > 0 &&
-                 GameData.CurrentAreaId() != (uint)condition.areaTest) conditionMet = false;
+            GameData.CurrentAreaId() != (uint)condition.areaTest) conditionMet = false;
         else if (condition.statusTest > 0 &&
-                 !PlayerEffects().Contains<uint>((uint)condition.statusTest)) conditionMet = false;
+            !PlayerEffects().Contains<uint>((uint)condition.statusTest)) conditionMet = false;
         else if (condition.combatTest == 1 && !IsInCombat()) conditionMet = false;
         else if (condition.combatTest == 2 && IsInCombat()) conditionMet = false;
         
@@ -115,22 +122,34 @@ public sealed class Plugin : IDalamudPlugin
                 }
             }
         }
+        
         return conditionMet;
     }
 
     private int tickTimer = 0;
-    private void OnFrameworkTick(IFramework framework)
+    private uint lastAreaId = 0;
+    
+    internal void OnFrameworkTick(IFramework framework)
     {
         if (tickTimer++ < 15) return;
         tickTimer = 0;
         
-        int currentSong = OrchestrionIpc.CurrentSong();
+        var currentSong = OrchestrionIpc.CurrentSong();
+        var currentAreaId = GameData.CurrentAreaId();
+        
         foreach (var condition in Configuration.Conditions)
         {
+            if (!condition.chatLogTest.IsNullOrEmpty() ||
+                condition.areaLeaveTest > 0)
+            {
+                // Chat log and area change triggers are handled separately
+                continue;
+            }
             if (CheckCondition(condition))
             {
                 if (currentSong != condition.targetSong)
                 {
+                    Log.Information("Basic condition fired: " + condition.ToString());
                     OrchestrionIpc.Play(condition.targetSong);
                 }
             }
@@ -139,7 +158,39 @@ public sealed class Plugin : IDalamudPlugin
                 if (condition.disableIfInactive &&
                     OrchestrionIpc.CurrentSong() == condition.targetSong)
                 {
+                    Log.Information("Basic condition stopped: " + condition.ToString());
                     OrchestrionIpc.Stop();
+                }
+            }
+        }
+
+        if (currentAreaId != lastAreaId)
+        {
+            foreach (var condition in Configuration.Conditions)
+            {
+                if (condition.areaLeaveTest > 0 &&
+                    condition.areaLeaveTest == lastAreaId &&
+                    CheckCondition(condition))
+                {
+                    Log.Information("Trigger on area change fired: " + condition.ToString());
+                    OrchestrionIpc.Play(condition.targetSong);
+                }
+            }
+            lastAreaId = currentAreaId;
+        }
+    }
+
+    internal void OnChatMessage(IHandleableChatMessage message)
+    {
+        foreach (var condition in Configuration.Conditions)
+        {
+            if (!condition.chatLogTest.IsNullOrEmpty())
+            {
+                if (message.Message.ToString().Contains(condition.chatLogTest) &&
+                    CheckCondition(condition))
+                {
+                    Log.Information("Trigger on chat message fired: " + condition.ToString());
+                    OrchestrionIpc.Play(condition.targetSong);
                 }
             }
         }

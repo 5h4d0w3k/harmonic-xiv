@@ -35,6 +35,7 @@ public class MainWindow : Window, IDisposable
     
     private int _weatherTest;
     private int _areaTest;
+    private int _areaLeaveTest;
     private int _statusTest;
     private int _combatTest;
     private int _entityProximityTest;
@@ -43,6 +44,7 @@ public class MainWindow : Window, IDisposable
 
     private bool _weatherTestActive;
     private bool _areaTestActive;
+    private bool _areaLeaveTestActive;
     private bool _statusTestActive;
     private bool _combatTestActive;
     private bool _entityProximityTestActive;
@@ -129,6 +131,20 @@ public class MainWindow : Window, IDisposable
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
+                ImGui.Checkbox("If leaving area: ", ref _areaLeaveTestActive);
+                ImGui.TableSetColumnIndex(1);
+                ImGui.Combo("##condAreaLeave", ref _areaLeaveTest, GameData.AreaNames, GameData.AreaNames.Count);
+                ImGui.SameLine();
+                if (ImGui.Button("Current##CAL"))
+                {
+                    _areaLeaveTest = GameData.GetIndexFromId(
+                        ref GameData.AreaNames, ref GameData.AreaIds,
+                        GameData.CurrentAreaId()
+                    );
+                }
+                
+                ImGui.TableNextRow();
+                ImGui.TableSetColumnIndex(0);
                 ImGui.Checkbox("If affected by status: ", ref _statusTestActive);
                 ImGui.TableSetColumnIndex(1);
                 ImGui.Combo("##condStatus", ref _statusTest, GameData.StatusNames, GameData.StatusNames.Count);
@@ -161,7 +177,7 @@ public class MainWindow : Window, IDisposable
                 
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                ImGui.Checkbox("If chat log message contains:", ref _chatLogTestActive);
+                ImGui.Checkbox("Trigger on chat log:", ref _chatLogTestActive);
                 ImGui.TableSetColumnIndex(1);
                 ImGui.InputText("##condChatLog", ref _chatLogTest, 256);
                 
@@ -184,6 +200,7 @@ public class MainWindow : Window, IDisposable
                     Condition cond = new();
                     if (_weatherTestActive) cond.weatherTest = (int) GameData.WeatherIds[_weatherTest];
                     if (_areaTestActive) cond.areaTest = (int) GameData.AreaIds[_areaTest];
+                    if (_areaLeaveTestActive) cond.areaLeaveTest = (int) GameData.AreaIds[_areaLeaveTest];
                     if (_statusTestActive) cond.statusTest = (int) GameData.StatusIds[_statusTest];
                     if (_combatTestActive) cond.combatTest = _combatTest+1;
                     if (_entityNameTestActive) cond.entityNameTest = _entityNameTest;
