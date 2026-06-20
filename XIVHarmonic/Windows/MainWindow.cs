@@ -238,6 +238,7 @@ public class MainWindow : Window, IDisposable
             effectList = plugin.PlayerEffects();
             effectListCycle = 0;
         }
-        return effectList[effectListCycle++];
+        if (effectList.Length == 0) return 0;
+        else return effectList[effectListCycle++];
     }
 }
