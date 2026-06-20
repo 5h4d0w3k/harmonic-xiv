@@ -115,7 +115,6 @@ public sealed class Plugin : IDalamudPlugin
                 }
             }
         }
-        Log.Information($"Condition Met: {conditionMet}");
         return conditionMet;
     }
 
@@ -128,9 +127,12 @@ public sealed class Plugin : IDalamudPlugin
         int currentSong = OrchestrionIpc.CurrentSong();
         foreach (var condition in Configuration.Conditions)
         {
-            if (CheckCondition(condition) && currentSong != condition.targetSong)
+            if (CheckCondition(condition))
             {
-                OrchestrionIpc.Play(condition.targetSong);
+                if (currentSong != condition.targetSong)
+                {
+                    OrchestrionIpc.Play(condition.targetSong);
+                }
             }
             else
             {
