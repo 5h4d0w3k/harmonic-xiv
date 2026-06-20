@@ -107,7 +107,10 @@ public class MainWindow : Window, IDisposable
                 ImGui.SameLine();
                 if (ImGui.Button("Current##CW"))
                 {
-                    _weatherTest = (int)GameData.CurrentWeatherId();
+                    _weatherTest = GameData.GetIndexFromId(
+                        ref GameData.WeatherNames, ref GameData.WeatherIds,
+                        GameData.CurrentWeatherId()
+                    );
                 }
 
                 ImGui.TableNextRow();
@@ -118,7 +121,10 @@ public class MainWindow : Window, IDisposable
                 ImGui.SameLine();
                 if (ImGui.Button("Current##CA"))
                 {
-                    _areaTest = (int)GameData.CurrentAreaId();
+                    _areaTest = GameData.GetIndexFromId(
+                        ref GameData.AreaNames, ref GameData.AreaIds,
+                        GameData.CurrentAreaId()
+                    );
                 }
                 
                 ImGui.TableNextRow();
@@ -129,7 +135,10 @@ public class MainWindow : Window, IDisposable
                 ImGui.SameLine();
                 if (ImGui.Button("Current##CS"))
                 {
-                    _statusTest = (int)CycleStatusEffect();
+                    _statusTest = GameData.GetIndexFromId(
+                        ref GameData.StatusNames, ref GameData.StatusIds,
+                        CycleStatusEffect()
+                    );
                 }
                 
                 ImGui.TableNextRow();
@@ -176,7 +185,7 @@ public class MainWindow : Window, IDisposable
                     if (_weatherTestActive) cond.weatherTest = (int) GameData.WeatherIds[_weatherTest];
                     if (_areaTestActive) cond.areaTest = (int) GameData.AreaIds[_areaTest];
                     if (_statusTestActive) cond.statusTest = (int) GameData.StatusIds[_statusTest];
-                    if (_combatTestActive) cond.combatTest = _combatTest;
+                    if (_combatTestActive) cond.combatTest = _combatTest+1;
                     if (_entityNameTestActive) cond.entityNameTest = _entityNameTest;
                     if (_entityProximityTestActive) cond.entityProximityTest = _entityProximityTest;
                     if (_chatLogTestActive) cond.chatLogTest = _chatLogTest;

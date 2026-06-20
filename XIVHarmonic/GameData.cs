@@ -61,14 +61,20 @@ public class GameData
             }
         }
     }
-
-    public static string StringifyId(ref List<string> names, ref List<uint> ids, uint id)
+    
+    public static int GetIndexFromId(ref List<string> names, ref List<uint> ids, uint id)
     {
         for (var i = 0; i < ids.Count; i++)
         {
-            if (ids[i] == id) return names[i];
+            if (ids[i] == id) return i;
         }
-        return $"[{id}] Undefined";
+        return -1;
+    }
+
+    public static string StringifyId(ref List<string> names, ref List<uint> ids, uint id)
+    {
+        var idx = GetIndexFromId(ref names, ref ids, id);
+        return idx < 0 ? $"[{id}] Undefined" : names[idx];
     }
 
     public static uint CurrentWeatherId()
