@@ -136,7 +136,7 @@ public sealed class Plugin : IDalamudPlugin
         
         var currentSong = OrchestrionIpc.CurrentSong();
         var currentAreaId = GameData.CurrentAreaId();
-        var queuedPlayerAction = 0;
+        var queuedPlayerAction = -1;
         
         foreach (var condition in Configuration.Conditions)
         {
@@ -167,8 +167,11 @@ public sealed class Plugin : IDalamudPlugin
             }
         }
         
-        Log.Verbose($"Effective action: {queuedPlayerAction}");
-        if (queuedPlayerAction >= 0) OrchestrionIpc.Play(queuedPlayerAction);
+        if (queuedPlayerAction >= 0)
+        {
+            Log.Verbose($"Effective action: {queuedPlayerAction}");
+            OrchestrionIpc.Play(queuedPlayerAction);
+        }
 
         if (currentAreaId != lastAreaId)
         {
