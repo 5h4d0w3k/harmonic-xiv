@@ -1,12 +1,10 @@
 {
-  "Author": "your name here",
-  "Name": "Sample Plugin",
-  "Punchline": "A short one-liner that shows up in /xlplugins.",
-  "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
+  "Author": "ShadowBlackWolf",
+  "Name": "Harmonic",
+  "Punchline": "Dynamically change in-game soundtrack based on configurable conditions.",
+  "Description": "Ever wanted to play different music when it's raining? When you're crafting? When Garuda's plumes put you to sleep during UWU prog? Now you can. Requires Orchestrion.",
   "ApplicableVersion": "any",
   "Tags": [
-    "sample",
-    "plugin",
-    "goats"
+    "bgm", "music"
   ]
 }
